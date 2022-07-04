@@ -11,9 +11,6 @@ import { Helper } from './Helper'
         printHelp()
         process.exit(1)
     }
-    // todo
-    // 解析pb协议。单个proto。多个proto。以文件夹方式传入，深度遍历所有proto。
-    // 保证单个message的唯一性，存在冲突或者缺失的话，直接报错
 
     // 传入code generator生成java
     let protoParseResult = await parseProto(argv.params[0])

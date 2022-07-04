@@ -264,30 +264,6 @@ export class MessageField extends Field {
         io.print(`}`);
     }
 
-    // public genPropertyGetSetHas(io: IO) {
-    //     let UpName = this.upperName();
-    //     let fieldTeyp = this.getTypeClass();
-    //     io.print();
-    //     io.print(`protected ${this.getTypeClass()} ${this.propertyName()};`)
-
-    //     io.print(`public ${this.block.name} set${UpName}(${fieldTeyp} value) {`);
-    //     io.indent()
-    //     io.print(Template.throw_null_ex1)
-    //     io.outdent()
-    //     io.print(`  ${this.propertyName()} = value;`);
-    //     io.print(`  ${BitNameHelper.generateSetBitInternal(this.seq)};`);
-    //     io.print(`  return this;`);
-    //     io.print(`}`);
-
-    //     io.print(`public boolean has${UpName}() {`);
-    //     io.print(`  return ${BitNameHelper.generateGetBitInternal(this.seq)};`);
-    //     io.print(`}`);
-        
-    //     io.print(`public ${fieldTeyp} get${UpName}() {`);
-    //     io.print(`  return ${this.propertyName()};`);
-    //     io.print(`}`);
-    // }
-
     protected genDefaultValue() {
         return `${this.getTypeClass()}.getDefaultInstance()`
     }
@@ -295,19 +271,6 @@ export class MessageField extends Field {
     public ioType() {
         return "Message";
     }
-
-    // public genWriteTo(io: IO) {
-    //     io.print(`if (${BitNameHelper.generateGetBitInternal(this.seq)}) {`)
-    //     io.print(`  output.writeMessage(${this.fieldNumber}, ${this.propertyName()});`)
-    //     io.print(`}`)
-    // }
-
-    // public genGetSerializedSize(io: IO) {
-    //     io.print(`if (${BitNameHelper.generateGetBitInternal(this.seq)}) {`)
-    //     io.print(`  size += com.google.protobuf.CodedOutputStream`)
-    //     io.print(`    .computeMessageSize(${this.fieldNumber}, ${this.propertyName()});`)
-    //     io.print(`}`)
-    // }
 }
 
 export class EnumField extends Field {
@@ -458,8 +421,6 @@ export class RepeatedField extends Field {
                 .replace(/\$uppername\$/g, this.upperName())
                 .replace(/\$datasize\$/g, ProtoField.TYPE_MAP[this.type].datasize+''))
         }
-        if (ProtoField.TYPE_MAP[this.type]) {
-        }
     }
 
     protected genDefaultValue() {
@@ -605,12 +566,6 @@ export class MessageRepeatedField extends RepeatedField {
         io.print(`  }`)
         io.print(`}`)
     }
-
-    // public genWriteTo(io: IO) {
-    //     io.print(`for (int i = 0; i < ${this.propertyName()}.size(); i++) {`)
-    //     io.print(`  output.writeMessage(${this.fieldNumber}, ${this.propertyName()}.get(i));`)
-    //     io.print(`}`)
-    // }
 
     public ioType() {
         return "Message"
