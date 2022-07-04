@@ -52,7 +52,7 @@ export class BitNameHelper {
     }
 
     public static generateGetBitInternal(bitIndex: number, prefix: string = ''): string {
-        let varName = prefix + this.getBitFieldNameForBit(bitIndex);
+        let varName = prefix + this.getBitFieldNameForBit(bitIndex-1);
         let bitInVarIndex = (bitIndex-1) % 32;
       
         let mask = this.bit_masks[bitInVarIndex];
@@ -60,7 +60,7 @@ export class BitNameHelper {
     }
 
     public static generateSetBitInternal(bitIndex: number, prefix: string = ''): string {
-        let varName = prefix + this.getBitFieldNameForBit(bitIndex);
+        let varName = prefix + this.getBitFieldNameForBit(bitIndex-1);
         let bitInVarIndex = (bitIndex-1) % 32;
       
         let mask = this.bit_masks[bitInVarIndex];
