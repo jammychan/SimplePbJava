@@ -1,7 +1,6 @@
 import * as protobuf from 'protobufjs'
 import { CodeGenerator } from './CodeGenerator'
 import { Helper } from './Helper'
-import { IO } from './IO'
 
 (async function main() {
 

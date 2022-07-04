@@ -1,7 +1,5 @@
-import { BitNameHelper } from "./BitNameHelper";
 import { BLOCK_TYPE, EnumBlock, MessageBlock, ProtoBlock, ProtoFile } from "./ProtoBlock";
 import { EnumField, EnumRepeatedField, Field, FIELD_RULE, MessageField, MessageRepeatedField, ProtoField, RepeatedField, StringField, StringRepeatedField } from "./ProtoField";
-import { WireTagHelper } from "./WireTagHelper";
 
 export class Helper {
     public toProtoFile(protoResult: any) : ProtoFile {

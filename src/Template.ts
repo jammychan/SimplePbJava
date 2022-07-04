@@ -1,23 +1,23 @@
 export class Template {
 
-    public static read_try_catch_start: string = 
-        `try {` + '\n' + 
-        `  boolean done = false;` + '\n' + 
-        `  while (!done) {` + '\n' +
-        `    int tag = input.readTag();` + '\n' + 
-        `    switch (tag) {` + '\n' + 
-        `      case 0:` + '\n' +
-        `        done = true;` + '\n' + 
-        `        break;` + '\n'+
-        `      default: {` + '\n'+
-        `        if (!parseUnknownField(input,` + '\n' + 
-        `            extensionRegistry, tag)) {` + '\n' +
-        `          done = true;` + '\n' +
-        `        }` + '\n' + 
-        `        break;` + '\n' + 
-        `      }`
+public static read_try_catch_start: string = 
+    `try {` + '\n' + 
+    `  boolean done = false;` + '\n' + 
+    `  while (!done) {` + '\n' +
+    `    int tag = input.readTag();` + '\n' + 
+    `    switch (tag) {` + '\n' + 
+    `      case 0:` + '\n' +
+    `        done = true;` + '\n' + 
+    `        break;` + '\n'+
+    `      default: {` + '\n'+
+    `        if (!parseUnknownField(input,` + '\n' + 
+    `            extensionRegistry, tag)) {` + '\n' +
+    `          done = true;` + '\n' +
+    `        }` + '\n' + 
+    `        break;` + '\n' + 
+    `      }`
         
-    public static read_try_catch_end: string = 
+public static read_try_catch_end: string = 
 `    }
   }
 } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -29,7 +29,7 @@ export class Template {
   makeExtensionsImmutable();
 }`;
 
-    public static message_PARSER: string = 
+public static message_PARSER: string = 
 `public static com.google.protobuf.Parser<$classname$> PARSER = 
     new com.google.protobuf.AbstractParser<$classname$>() {
   public $classname$ parsePartialFrom(
@@ -40,16 +40,12 @@ export class Template {
   }
 };`;
 
-  public static throw_null_ex: string = 
+public static throw_null_ex: string = 
 `if (value == null) {
   throw new NullPointerException();
 }`;
-  public static throw_null_ex1: string = 
-`if (value == (null)) {
-  throw new NullPointerException();
-}`;
 
-  public static get_string1: string = 
+public static get_string1: string = 
 `public java.lang.String get$uppername$() {
   java.lang.Object ref = $propertyname$;
   if (ref instanceof java.lang.String) {
@@ -65,7 +61,7 @@ export class Template {
   }
 }`;
 
-  public static get_string2: string = 
+public static get_string2: string = 
 `public com.google.protobuf.ByteString
     get$uppername$Bytes() {
   java.lang.Object ref = $propertyname$;
@@ -80,7 +76,7 @@ export class Template {
   }
 }`;
 
-  public static getSerializedSize_start: string = 
+public static getSerializedSize_start: string = 
 `private int memoizedSerializedSize = -1;
 public int getSerializedSize() {
   int size = memoizedSerializedSize;
@@ -88,12 +84,12 @@ public int getSerializedSize() {
 
   size = 0;`;
 
-  public static getSerializedSize_end: string = 
+public static getSerializedSize_end: string = 
 `  memoizedSerializedSize = size;
   return size;
 }`
 
-  public static repeated_serialized_size: string = 
+public static repeated_serialized_size: string = 
 `{
   int dataSize = 0;
   dataSize = $datasize$ * get$uppername$List().size();
@@ -118,7 +114,7 @@ public static repeated_enum_serialized_size: string =
   size += 1 * $propertyname$.size();
 }`
 
-  public static repeated_serialized_for_compute_size: string = 
+public static repeated_serialized_for_compute_size: string = 
 `{
   int dataSize = 0;
   for (int i = 0; i < $propertyname$.size(); i++) {
@@ -129,7 +125,7 @@ public static repeated_enum_serialized_size: string =
   size += 1 * get$uppername$List().size();
 }`;
 
-  public static repeated_string_serialized_size: string = 
+public static repeated_string_serialized_size: string = 
 `{
   int dataSize = 0;
   for (int i = 0; i < $propertyname$.size(); i++) {
@@ -140,7 +136,7 @@ public static repeated_enum_serialized_size: string =
   size += 1 * get$uppername$List().size();
 }`;
 
-  public static parse_from: string = 
+public static parse_from: string = 
 `public static $classname$.$messagename$ parseFrom(
     com.google.protobuf.ByteString data)
     throws com.google.protobuf.InvalidProtocolBufferException {
@@ -151,7 +147,7 @@ public static $classname$.$messagename$ parseFrom(byte[] data)
   return PARSER.parseFrom(data);
 }`;
 
-  public static builder_method: string = 
+public static builder_method: string = 
 `public static $classname$.$messagename$ newBuilder() { return new $classname$.$messagename$(); }
 public static $classname$.$messagename$ newBuilder($classname$.$messagename$ prototype) {
   return prototype;
