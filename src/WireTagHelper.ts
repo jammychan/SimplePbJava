@@ -41,7 +41,25 @@ export class WireTagHelper {
         return this.WIRE_MAP;
     }
 
-    public static getTag(field: Field) : number {
+    public static getTagSize(filed: Field): number {
+        let value = filed.fieldNumber << WireTagHelper.TAG_TYPE_BITS 
+        let log2value = 31 ^ WireTagHelper.__builtin_clz(value | 0x1);
+        return Math.floor((log2value * 9 + 73) / 64);
+    }
+
+    public static __builtin_clz(val: number): number {
+        let count = 0
+        for (var i=31; i>=0; --i) {
+            if (val < Math.pow(2, i)) {
+                count++
+            } else {
+                break;
+            }
+        }
+        return count
+    }
+
+    public static getTag(field: Field): number {
         if (field.isEnumField()) {
             return (field.fieldNumber << WireTagHelper.TAG_TYPE_BITS) | WireTagHelper.WIRETYPE_VARINT;
         }

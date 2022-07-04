@@ -14,7 +14,7 @@ export class ProtoField {
         "fixed64": "0L",
         "fixed32": "0",
         "bool": "false",
-        "string": "\"\"",
+        "string": "",
         "bytes": "com.google.protobuf.ByteString.EMPTY",
         "uint32": "0",
         "sfixed32": "0",
@@ -23,21 +23,22 @@ export class ProtoField {
         "sint64": "0L",
     }
     public static TYPE_MAP: any = {
-        "double": {for_compute: 0, datasize: 8, iotype: "Double",   rawtype:"double",    javatype:"java.lang.Double"},
-        "float" : {for_compute: 0, datasize: 4, iotype: "Float",    rawtype:"float",     javatype:"java.lang.Float"},
-        "int64" : {for_compute: 1, datasize: 8, iotype: "Int64",    rawtype:"long",      javatype:"java.lang.Long"},
-        "uint64": {for_compute: 1, datasize: 8, iotype: "UInt64",   rawtype:"long",      javatype:"java.lang.Long"},
-        "int32" : {for_compute: 1, datasize: 4, iotype: "Int32",    rawtype:"int",       javatype:"java.lang.Integer"},
-        "fixed64":{for_compute: 0, datasize: 8, iotype: "Fixed64",  rawtype:"long",      javatype:"java.lang.Long"},
-        "fixed32":{for_compute: 0, datasize: 4, iotype: "Fixed32",  rawtype:"int",       javatype:"java.lang.Integer"},
-        "bool"  : {for_compute: 0, datasize: 1, iotype: "Bool",     rawtype:"boolean",   javatype:"java.lang.Boolean"},
-        "string": {for_compute: 0, datasize: 0, iotype: "Bytes",    rawtype:"java.lang.String",                   javatype:"java.lang.String"},
-        "bytes" : {for_compute: 1, datasize: 0, iotype: "Bytes",    rawtype:"com.google.protobuf.ByteString",     javatype:"com.google.protobuf.ByteString"},
-        "uint32": {for_compute: 1, datasize: 4, iotype: "UInt32",   rawtype:"int",       javatype:"java.lang.Integer"},
-        "sfixed32":{for_compute:0, datasize: 4, iotype:"SFixed32",  rawtype:"int",       javatype:"java.lang.Integer"},
-        "sfixed64":{for_compute:0, datasize: 8, iotype:"SFixed64",  rawtype:"long",      javatype:"java.lang.Long"},
-        "sint32": {for_compute: 1, datasize: 4, iotype: "SInt32",   rawtype:"int",       javatype:"java.lang.Integer"},
-        "sint64": {for_compute: 1, datasize: 8, iotype: "SInt64",   rawtype:"long",      javatype:"java.lang.Long"},
+        // need_compute, =1表示根据值大小，来计算serialize size大小。
+        "double": {need_compute: 0, datasize: 8, iotype: "Double",   rawtype:"double",    javatype:"java.lang.Double"},
+        "float" : {need_compute: 0, datasize: 4, iotype: "Float",    rawtype:"float",     javatype:"java.lang.Float"},
+        "int64" : {need_compute: 1, datasize: 0, iotype: "Int64",    rawtype:"long",      javatype:"java.lang.Long"},
+        "uint64": {need_compute: 1, datasize: 0, iotype: "UInt64",   rawtype:"long",      javatype:"java.lang.Long"},
+        "int32" : {need_compute: 1, datasize: 0, iotype: "Int32",    rawtype:"int",       javatype:"java.lang.Integer"},
+        "fixed64":{need_compute: 0, datasize: 8, iotype: "Fixed64",  rawtype:"long",      javatype:"java.lang.Long"},
+        "fixed32":{need_compute: 0, datasize: 4, iotype: "Fixed32",  rawtype:"int",       javatype:"java.lang.Integer"},
+        "bool"  : {need_compute: 0, datasize: 1, iotype: "Bool",     rawtype:"boolean",   javatype:"java.lang.Boolean"},
+        "string": {need_compute: 0, datasize: 0, iotype: "Bytes",    rawtype:"java.lang.String",                   javatype:"java.lang.String"},
+        "bytes" : {need_compute: 1, datasize: 0, iotype: "Bytes",    rawtype:"com.google.protobuf.ByteString",     javatype:"com.google.protobuf.ByteString"},
+        "uint32": {need_compute: 1, datasize: 0, iotype: "UInt32",   rawtype:"int",       javatype:"java.lang.Integer"},
+        "sfixed32":{need_compute:0, datasize: 4, iotype:"SFixed32",  rawtype:"int",       javatype:"java.lang.Integer"},
+        "sfixed64":{need_compute:0, datasize: 8, iotype:"SFixed64",  rawtype:"long",      javatype:"java.lang.Long"},
+        "sint32": {need_compute: 1, datasize: 0, iotype: "SInt32",   rawtype:"int",       javatype:"java.lang.Integer"},
+        "sint64": {need_compute: 1, datasize: 0, iotype: "SInt64",   rawtype:"long",      javatype:"java.lang.Long"},
     }
 }
 
@@ -123,6 +124,9 @@ export class Field {
     }
     public upperName(): string {
         return Field.underline2CamelCase(this.name, true)
+    }
+    public lowerName(): string {
+        return Field.underline2CamelCase(this.name)
     }
 
     public static underline2CamelCase(word: string, isFirstLetterUpperCase: boolean = false): string {
@@ -318,6 +322,11 @@ export class EnumField extends Field {
 }
 
 export class RepeatedField extends Field {
+    
+    public isPacked() {
+        return this.options && this.options.packed == true
+    }
+
     public genReadFrom(io: IO) {
         let tag = WireTagHelper.getTag(this);
         let iotype = this.ioType();
@@ -400,25 +409,55 @@ export class RepeatedField extends Field {
         io.print(`public ${rawtype} get${UpName}(int index) {`)
         io.print(`  return ${this.propertyName()}.get(index);`)
         io.print(`}`)
+
+        if (this.isPacked()) {
+            io.print()
+            io.print(`private int ${this.lowerName()}MemoizedSerializedSize = -1;`)
+        }
     }
 
     public genWriteTo(io: IO) {
         let iotype = this.ioType()
-        let getNumberCall = this.isEnumField() ? ".getNumber()" : "";
-        io.print(`for (int i = 0; i < ${this.propertyName()}.size(); i++) {`)
-        io.print(`  output.write${iotype}(${this.fieldNumber}, ${this.propertyName()}.get(i)${getNumberCall});`)
-        io.print(`}`)
+        let getNumberCall = this.isEnumField() ? ".getNumber()" : ""; // getNumber() is for enum type.
+        if (this.isPacked())  {
+            io.print(`if (get${this.upperName()}List().size() > 0) {`)
+            io.print(`  output.writeRawVarint32(${WireTagHelper.getRepeatedPackedTag(this)});`)
+            io.print(`  output.writeRawVarint32(${this.lowerName()}MemoizedSerializedSize);`)
+            io.print(`}`)
+            io.print(`for (int i = 0; i < ${this.propertyName()}.size(); i++) {`)
+            io.print(`  output.write${iotype}NoTag(${this.propertyName()}.get(i)${getNumberCall});`)
+            io.print(`}`)
+        } else {
+            io.print(`for (int i = 0; i < ${this.propertyName()}.size(); i++) {`)
+            io.print(`  output.write${iotype}(${this.fieldNumber}, ${this.propertyName()}.get(i)${getNumberCall});`)
+            io.print(`}`)
+        }
     }
 
     public genGetSerializedSize(io: IO) {
-        if (ProtoField.TYPE_MAP[this.type].for_compute == 1)  {
-            io.print(Template.repeated_serialized_for_compute_size
+        if (this.isPacked()) {
+            let datasize = ProtoField.TYPE_MAP[this.type].datasize
+            let template = ProtoField.TYPE_MAP[this.type].need_compute == 1 
+                ? Template.repeated_serialized_size_compute_packed 
+                : Template.repeated_serialized_size_packed;
+            io.print(template
+                .replace(/\$propertyname\$/g, this.propertyName())
+                .replace(/\$uppername\$/g, this.upperName())
+                .replace(/\$lowername\$/g, this.lowerName())
+                .replace(/\$datasize\$/g, datasize+'')
+                .replace(/\$tagsize\$/g, WireTagHelper.getTagSize(this)+'')
+                .replace(/\$iotype\$/g, this.ioType()))
+        } else if (ProtoField.TYPE_MAP[this.type].need_compute == 1)  {
+            io.print(Template.repeated_serialized_need_compute_size
                 .replace(/\$uppername\$/g, this.upperName())
                 .replace(/\$propertyname\$/g, this.propertyName())
+                .replace(/\$datasize\$/g, WireTagHelper.getTagSize(this)+'')
+                .replace(/\$tagsize\$/g, WireTagHelper.getTagSize(this)+'')
                 .replace(/\$iotype\$/g, this.ioType()))
         } else {
             io.print(Template.repeated_serialized_size
                 .replace(/\$uppername\$/g, this.upperName())
+                .replace(/\$tagsize\$/g, WireTagHelper.getTagSize(this)+'')
                 .replace(/\$datasize\$/g, ProtoField.TYPE_MAP[this.type].datasize+''))
         }
     }
@@ -455,7 +494,9 @@ export class StringRepeatedField extends RepeatedField {
     public genGetSerializedSize(io: IO) {
         io.print(Template.repeated_string_serialized_size
             .replace(/\$uppername\$/g, this.upperName())
-            .replace(/\$propertyname\$/g, this.propertyName()))
+            .replace(/\$propertyname\$/g, this.propertyName())
+            .replace(/\$datasize\$/g, WireTagHelper.getTagSize(this)+'')
+            )
     }
 
     public genPropertyGetSetHas(io: IO) {
@@ -631,7 +672,19 @@ export class EnumRepeatedField extends RepeatedField {
     }
 
     public genGetSerializedSize(io: IO) {
-        io.print(Template.repeated_enum_serialized_size.replace(/\$propertyname\$/g, this.propertyName()))
+        if (this.isPacked()) {
+            io.print(Template.repeated_enum_serialized_size_packed
+                .replace(/\$propertyname\$/g, this.propertyName())
+                .replace(/\$uppername\$/g, this.upperName())
+                .replace(/\$lowername\$/g, this.lowerName())
+                .replace(/\$tagsize\$/g, WireTagHelper.getTagSize(this)+'')
+            )
+        } else {
+            io.print(Template.repeated_enum_serialized_size
+                .replace(/\$propertyname\$/g, this.propertyName())
+                .replace(/\$tagsize\$/g, WireTagHelper.getTagSize(this)+'')
+            )
+        }
     }
 
     public ioType() {

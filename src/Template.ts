@@ -94,7 +94,47 @@ public static repeated_serialized_size: string =
   int dataSize = 0;
   dataSize = $datasize$ * get$uppername$List().size();
   size += dataSize;
-  size += 1 * get$uppername$List().size();
+  size += $tagsize$ * get$uppername$List().size();
+}`;
+
+public static repeated_serialized_need_compute_size: string = 
+`{
+  int dataSize = 0;
+  for (int i = 0; i < $propertyname$.size(); i++) {
+    dataSize += com.google.protobuf.CodedOutputStream
+      .compute$iotype$SizeNoTag($propertyname$.get(i));
+  }
+  size += dataSize;
+  size += $datasize$ * get$uppername$List().size();
+}`;
+
+public static repeated_serialized_size_packed: string = 
+`{
+  int dataSize = 0;
+  dataSize = $datasize$ * get$uppername$List().size();
+  size += dataSize;
+  if (!get$uppername$List().isEmpty()) {
+    size += $tagsize$;
+    size += com.google.protobuf.CodedOutputStream
+      .computeInt32SizeNoTag(dataSize);
+  }
+  $lowername$MemoizedSerializedSize = dataSize;
+}`;
+
+public static repeated_serialized_size_compute_packed: string = 
+`{
+  int dataSize = 0;
+  for (int i = 0; i < $propertyname$.size(); i++) {
+    dataSize += com.google.protobuf.CodedOutputStream
+      .compute$iotype$SizeNoTag($propertyname$.get(i));
+  }
+  size += dataSize;
+  if (!get$uppername$List().isEmpty()) {
+    size += $tagsize$;
+    size += com.google.protobuf.CodedOutputStream
+      .computeInt32SizeNoTag(dataSize);
+  }
+  $lowername$MemoizedSerializedSize = dataSize;
 }`;
 
 public static repeated_message_serialized_size: string = 
@@ -111,19 +151,24 @@ public static repeated_enum_serialized_size: string =
       .computeEnumSizeNoTag($propertyname$.get(i).getNumber());
   }
   size += dataSize;
-  size += 1 * $propertyname$.size();
+  size += $tagsize$ * $propertyname$.size();
 }`
 
-public static repeated_serialized_for_compute_size: string = 
+public static repeated_enum_serialized_size_packed: string = 
 `{
   int dataSize = 0;
   for (int i = 0; i < $propertyname$.size(); i++) {
     dataSize += com.google.protobuf.CodedOutputStream
-      .compute$iotype$SizeNoTag($propertyname$.get(i));
+      .computeEnumSizeNoTag($propertyname$.get(i).getNumber());
   }
   size += dataSize;
-  size += 1 * get$uppername$List().size();
-}`;
+  if (!get$uppername$List().isEmpty()) {
+    size += $tagsize$;
+    size += com.google.protobuf.CodedOutputStream
+      .computeRawVarint32Size(dataSize);
+  }
+  $lowername$MemoizedSerializedSize = dataSize;
+}`
 
 public static repeated_string_serialized_size: string = 
 `{
@@ -133,7 +178,7 @@ public static repeated_string_serialized_size: string =
       .computeBytesSizeNoTag($propertyname$.getByteString(i));
   }
   size += dataSize;
-  size += 1 * get$uppername$List().size();
+  size += $datasize$ * get$uppername$List().size();
 }`;
 
 public static parse_from: string = 
