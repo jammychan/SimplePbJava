@@ -186,8 +186,15 @@ export class Field {
         io.print(`}`)
     }
 
+    protected genDefaultValue() {
+        return ProtoField.DEFAULT_VALUE[this.type]
+    }
+
     public genInitDefaultValue(io: IO) {
-        io.print(`${this.propertyName()} = ${ProtoField.DEFAULT_VALUE[this.type]};`)
+        let defValue = (this.options != null && this.options.default != null) 
+                ? this.options.default 
+                : this.genDefaultValue();
+        io.print(`${this.propertyName()} = ${defValue};`)
     }
 }
 
@@ -230,6 +237,13 @@ export class StringField extends Field {
         io.print(`  size += com.google.protobuf.CodedOutputStream`)
         io.print(`    .computeBytesSize(${this.fieldNumber}, get${this.upperName()}Bytes());`)
         io.print(`}`)
+    }
+
+    public genInitDefaultValue(io: IO) {
+        let defValue = (this.options != null && this.options.default != null) 
+                ? this.options.default 
+                : this.genDefaultValue();
+        io.print(`${this.propertyName()} = "${defValue}";`)
     }
 }
 
@@ -274,8 +288,8 @@ export class MessageField extends Field {
     //     io.print(`}`);
     // }
 
-    public genInitDefaultValue(io: IO) {
-        io.print(`${this.propertyName()} = ${this.getTypeClass()}.getDefaultInstance();`)
+    protected genDefaultValue() {
+        return `${this.getTypeClass()}.getDefaultInstance()`
     }
 
     public ioType() {
@@ -311,7 +325,7 @@ export class EnumField extends Field {
         io.print(`}`);
     }
 
-    public genInitDefaultValue(io: IO) {
+    protected genDefaultValue() {
         let enumBlock = this.block.protoFile.blocksObject[this.type];
         if (null == enumBlock || null == enumBlock.values) {
             throw new Error(`unknow enum type[${this.type}].`);
@@ -321,7 +335,14 @@ export class EnumField extends Field {
             throw new Error(`enum type[${this.type}], not has enum values.`);
         }
         let firstOneEnumValue = keys[0];
-        io.print(`${this.propertyName()} = ${this.getTypeClass()}.${firstOneEnumValue};`)
+        return `${this.getTypeClass()}.${firstOneEnumValue}`;
+    }
+
+    public genInitDefaultValue(io: IO) {
+        let defValue = (this.options != null && this.options.default != null) 
+                ? `${this.getTypeClass()}.${this.options.default}` 
+                : this.genDefaultValue();
+        io.print(`${this.propertyName()} = ${defValue};`)
     }
 
     public ioType() {
@@ -441,8 +462,8 @@ export class RepeatedField extends Field {
         }
     }
 
-    public genInitDefaultValue(io: IO): void {
-        io.print(`${this.propertyName()} = java.util.Collections.emptyList();`)
+    protected genDefaultValue() {
+        return `java.util.Collections.emptyList()`;
     }
 }
 
@@ -524,8 +545,8 @@ export class StringRepeatedField extends RepeatedField {
         io.print(`}`)
     }
 
-    public genInitDefaultValue(io: IO): void {
-        io.print(`${this.propertyName()} = com.google.protobuf.LazyStringArrayList.EMPTY;`)
+    protected genDefaultValue(): string {
+        return `com.google.protobuf.LazyStringArrayList.EMPTY`;        
     }
 }
 
