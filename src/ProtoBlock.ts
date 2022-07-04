@@ -1,4 +1,4 @@
-import path = require("path");
+import path from "path";
 import { IO } from "./IO";
 import * as fs from "fs";
 import { BitNameHelper } from "./BitNameHelper";
@@ -9,6 +9,7 @@ export class ProtoFile {
     public java_package!: string;
     public java_outer_classname!: string;
     public blocks!: ProtoBlock[];
+    public blocksObject!: any;
 
     public generateCode(outputDir: string) {
         let subDirs = this.java_package.split('\.');

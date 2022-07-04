@@ -312,7 +312,15 @@ export class EnumField extends Field {
     }
 
     public genInitDefaultValue(io: IO) {
-        let firstOneEnumValue = `todo here`;
+        let enumBlock = this.block.protoFile.blocksObject[this.type];
+        if (null == enumBlock || null == enumBlock.values) {
+            throw new Error(`unknow enum type[${this.type}].`);
+        }
+        let keys = Object.keys(enumBlock.values);
+        if (keys.length <= 0) {
+            throw new Error(`enum type[${this.type}], not has enum values.`);
+        }
+        let firstOneEnumValue = keys[0];
         io.print(`${this.propertyName()} = ${this.getTypeClass()}.${firstOneEnumValue};`)
     }
 

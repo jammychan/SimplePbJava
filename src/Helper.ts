@@ -20,6 +20,7 @@ export class Helper {
         protoFile.java_package = headerOptions.java_package;
         protoFile.java_outer_classname = headerOptions.java_outer_classname;
         protoFile.blocks = this.blocksObjectToProtoBlocks(blocksObject);
+        protoFile.blocksObject = blocksObject;
         console.log(`java_package = ${protoFile.java_package}, java_outer_classname = ${protoFile.java_outer_classname}`)
         for (var block of protoFile.blocks) {
             block.protoFile = protoFile;
@@ -51,7 +52,7 @@ export class Helper {
             return isRepeated ? new RepeatedField() : new Field();
         }
         if (blockTypeMap[type] == null) {
-            throw new Error(`unknow type[${type}]`);
+            throw new Error(`unknow type[${type}].`);
         }
         if (blockTypeMap[type] == BLOCK_TYPE.MESSAGE) {
             return isRepeated ? new MessageRepeatedField() : new MessageField();
