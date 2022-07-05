@@ -43,8 +43,27 @@ export class WireTagHelper {
 
     public static getTagSize(filed: Field): number {
         let value = filed.fieldNumber << WireTagHelper.TAG_TYPE_BITS 
+        return WireTagHelper.getTagSizeFromComplier(value)
+    }
+
+    public static getTagSizeFromComplier(value: number) {
         let log2value = 31 ^ WireTagHelper.__builtin_clz(value | 0x1);
         return Math.floor((log2value * 9 + 73) / 64);
+    }
+
+    /**
+     * 从pb2.5.0.jar获取来的
+     */
+    public static getTagSizeFromJava(value: number) {
+        if ((value & -128) == 0) {
+            return 1;
+        } else if ((value & -16384) == 0) {
+            return 2;
+        } else if ((value & -2097152) == 0) {
+            return 3;
+        } else {
+            return (value & -268435456) == 0 ? 4 : 5;
+        }
     }
 
     public static __builtin_clz(val: number): number {
