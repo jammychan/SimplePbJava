@@ -1,20 +1,25 @@
 import { IO } from "./IO";
-
 import { WireTagHelper } from "./WireTagHelper"
 
 (async function main() {
-
-    console.log(WireTagHelper.__builtin_clz(0x1))
-    console.log(WireTagHelper.__builtin_clz(0x2))
-    console.log(WireTagHelper.__builtin_clz(0x4))
-    console.log(WireTagHelper.__builtin_clz(0x8))
-    console.log(WireTagHelper.__builtin_clz(0x10))
-    console.log(WireTagHelper.__builtin_clz(0xfffffff))
-    console.log(WireTagHelper.__builtin_clz(0x1fffffff))
-    console.log(WireTagHelper.__builtin_clz(0x2fffffff))
-    console.log(WireTagHelper.__builtin_clz(0x4fffffff))
-    console.log(WireTagHelper.__builtin_clz(0x8fffffff))
-    console.log(WireTagHelper.__builtin_clz(0xffffffff))
+    assert(WireTagHelper.__builtin_clz(0x1), 31)
+    assert(WireTagHelper.__builtin_clz(0x2), 30)
+    assert(WireTagHelper.__builtin_clz(0x4), 29)
+    assert(WireTagHelper.__builtin_clz(0x8), 28)
+    assert(WireTagHelper.__builtin_clz(0x10), 27)
+    assert(WireTagHelper.__builtin_clz(0xfffffff), 4)
+    assert(WireTagHelper.__builtin_clz(0x1fffffff), 3)
+    assert(WireTagHelper.__builtin_clz(0x2fffffff), 2)
+    assert(WireTagHelper.__builtin_clz(0x4fffffff), 1)
+    assert(WireTagHelper.__builtin_clz(0x8fffffff), 0)
+    assert(WireTagHelper.__builtin_clz(0xffffffff), 1)
+    
+    let tmp = 50;
+    while (tmp < 1000*1000*1000) {
+        assert(WireTagHelper.getTagSizeFromComplier(tmp), WireTagHelper.getTagSizeFromJava(tmp), tmp+'')
+        tmp += 10000;
+    }
+    console.log(Math.floor(tmp/10000))
 
 })().catch((err: any) => {
     console.error(err)
@@ -30,4 +35,10 @@ function testIO() {
     io.outdent()
     io.outdent()
     io.print('}')
+}
+
+function assert(a, b, title='') {
+    if (a !== b) {
+        throw new Error(`${title} [${a}] [${b}] not equal`)
+    }
 }

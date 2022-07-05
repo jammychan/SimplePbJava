@@ -7,6 +7,7 @@
     "build": "./node_modules/.bin/tsc",
     "gen": "node ./build/cli.js build ./protos/namecard.proto",
     "cli": "node ./build/cli.js",
+    "test":"node ./build/Test.js",
     "esbuild": "esbuild `find src \\( -name '*.ts' \\)` --bundle --platform=node --outdir=./build"
   },
   "keywords": [

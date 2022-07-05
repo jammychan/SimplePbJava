@@ -1,4 +1,4 @@
-import { ProtoFile } from "./ProtoBlock";
+import { ProtoFile } from "./ProtoFile";
 
 export class CodeGenerator {
     

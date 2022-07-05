@@ -1,6 +1,6 @@
-import path from "path";
-import { IO } from "./IO";
 import * as fs from "fs";
+import * as path from "path";
+import { IO } from "./IO";
 import { EnumBlock, MessageBlock, ProtoBlock } from "./ProtoBlock";
 
 export class ProtoFile {
