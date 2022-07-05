@@ -1,8 +1,8 @@
-import { ProtoFile } from "./ProtoFile";
+import { ProtoFile } from "./ProtoFile"
 
 export class CodeGenerator {
     
     public generate(protoFile: ProtoFile) {
-        protoFile.generateCode('.');
+        protoFile.generateCode('.')
     }
 }

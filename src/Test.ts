@@ -1,4 +1,4 @@
-import { IO } from "./IO";
+import { IO } from "./IO"
 import { WireTagHelper } from "./WireTagHelper"
 
 (async function main() {
@@ -14,10 +14,10 @@ import { WireTagHelper } from "./WireTagHelper"
     assert(WireTagHelper.__builtin_clz(0x8fffffff), 0)
     assert(WireTagHelper.__builtin_clz(0xffffffff), 1)
     
-    let tmp = 50;
+    let tmp = 50
     while (tmp < 1000*1000*1000) {
         assert(WireTagHelper.getTagSizeFromComplier(tmp), WireTagHelper.getTagSizeFromJava(tmp), tmp+'')
-        tmp += 10000;
+        tmp += 10000
     }
     console.log(Math.floor(tmp/10000))
 
@@ -26,7 +26,7 @@ import { WireTagHelper } from "./WireTagHelper"
 })
 
 function testIO() {
-    let io = new IO('./tmp.txt');
+    let io = new IO('./tmp.txt')
     io.print('public class A {')
     io.indent()
     io.print('public s: string')

@@ -27,7 +27,7 @@ public static read_try_catch_end: string =
       e.getMessage()).setUnfinishedMessage(this);
 } finally {
   makeExtensionsImmutable();
-}`;
+}`
 
 public static message_PARSER: string = 
 `public static com.google.protobuf.Parser<$classname$> PARSER = 
@@ -38,12 +38,12 @@ public static message_PARSER: string =
       throws com.google.protobuf.InvalidProtocolBufferException {
     return new $classname$(input, extensionRegistry);
   }
-};`;
+};`
 
 public static throw_null_ex: string = 
 `if (value == null) {
   throw new NullPointerException();
-}`;
+}`
 
 public static get_string1: string = 
 `public java.lang.String get$uppername$() {
@@ -59,7 +59,7 @@ public static get_string1: string =
     }
     return s;
   }
-}`;
+}`
 
 public static get_string2: string = 
 `public com.google.protobuf.ByteString
@@ -74,7 +74,7 @@ public static get_string2: string =
   } else {
     return (com.google.protobuf.ByteString) ref;
   }
-}`;
+}`
 
 public static getSerializedSize_start: string = 
 `private int memoizedSerializedSize = -1;
@@ -82,7 +82,7 @@ public int getSerializedSize() {
   int size = memoizedSerializedSize;
   if (size != -1) return size;
 
-  size = 0;`;
+  size = 0;`
 
 public static getSerializedSize_end: string = 
 `  memoizedSerializedSize = size;
@@ -95,7 +95,7 @@ public static repeated_serialized_size: string =
   dataSize = $datasize$ * get$uppername$List().size();
   size += dataSize;
   size += $tagsize$ * get$uppername$List().size();
-}`;
+}`
 
 public static repeated_serialized_need_compute_size: string = 
 `{
@@ -106,7 +106,7 @@ public static repeated_serialized_need_compute_size: string =
   }
   size += dataSize;
   size += $datasize$ * get$uppername$List().size();
-}`;
+}`
 
 public static repeated_serialized_size_packed: string = 
 `{
@@ -119,7 +119,7 @@ public static repeated_serialized_size_packed: string =
       .computeInt32SizeNoTag(dataSize);
   }
   $lowername$MemoizedSerializedSize = dataSize;
-}`;
+}`
 
 public static repeated_serialized_size_compute_packed: string = 
 `{
@@ -135,7 +135,7 @@ public static repeated_serialized_size_compute_packed: string =
       .computeInt32SizeNoTag(dataSize);
   }
   $lowername$MemoizedSerializedSize = dataSize;
-}`;
+}`
 
 public static repeated_message_serialized_size: string = 
 `for (int i = 0; i < $propertyname$.size(); i++) {
@@ -179,7 +179,7 @@ public static repeated_string_serialized_size: string =
   }
   size += dataSize;
   size += $datasize$ * get$uppername$List().size();
-}`;
+}`
 
 public static parse_from: string = 
 `public static $classname$.$messagename$ parseFrom(
@@ -190,7 +190,7 @@ public static parse_from: string =
 public static $classname$.$messagename$ parseFrom(byte[] data)
     throws com.google.protobuf.InvalidProtocolBufferException {
   return PARSER.parseFrom(data);
-}`;
+}`
 
 public static builder_method: string = 
 `public static $classname$.$messagename$ newBuilder() { return new $classname$.$messagename$(); }
@@ -204,13 +204,13 @@ public $classname$.$messagename$ build() {
     throw new com.google.protobuf.UninitializedMessageException(result);
   }
   return result;
-}`;
+}`
 
 public static required_isInitialized: string =
 `if (!has$uppername$()) {
   memoizedIsInitialized = 0;
   return false;
-}`;
+}`
 
 public static repeated_isInitialized_message: string =
 `for (int i = 0; i < get$uppername$Count(); i++) {
@@ -218,13 +218,13 @@ public static repeated_isInitialized_message: string =
     memoizedIsInitialized = 0;
     return false;
   }
-}`;
+}`
 
 public static required_isInitialized_message: string =
 `if (!get$uppername$().isInitialized()) {
   memoizedIsInitialized = 0;
   return false;
-}`;
+}`
 
 public static optional_isInitialized_message: string =
 `if (has$uppername$()) {
@@ -232,14 +232,14 @@ public static optional_isInitialized_message: string =
     memoizedIsInitialized = 0;
     return false;
   }
-}`;
+}`
 
 public static enum_constuctor: string = 
 `private final int value;
 
 private $enumname$(int index, int value) {
   this.value = value;
-}`;
+}`
 
 public static enum_read_value: string = 
 `int rawValue = input.readEnum();

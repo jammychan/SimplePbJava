@@ -1,8 +1,8 @@
-import { IO } from "./IO";
-import { BitNameHelper } from "./BitNameHelper";
-import { Template } from "./Template";
-import { Field } from "./ProtoField";
-import { ProtoFile } from "./ProtoFile";
+import { IO } from "./IO"
+import { BitNameHelper } from "./BitNameHelper"
+import { Template } from "./Template"
+import { Field } from "./ProtoField"
+import { ProtoFile } from "./ProtoFile"
 
 export enum BLOCK_TYPE {
     ENUM = "enum",
@@ -10,38 +10,43 @@ export enum BLOCK_TYPE {
 }
 
 export abstract class ProtoBlock {
-    public name!: string;
+    public name!: string
     public nestedOnes!: ProtoBlock[]
-    public protoFile!: ProtoFile;
+    public protoFile!: ProtoFile
     // ProtoBlock(nestedOnes: ProtoBlock[]) {
     //     this.nestedOnes = nestedOnes
     // }
-    public abstract generateCode(io: IO): any;
+    public abstract generateCode(io: IO): any
 }
 
 export class MessageBlock extends ProtoBlock {
-    public fields!: Field[];
+    public fields!: Field[]
     public generateCode(io: IO): any {
-        io.print(`public static class ${this.name} extends`);
+        io.print(`public static class ${this.name} extends`)
         io.print(`    com.mini_pbjava.GeneratedMessageLiteBase`)
         io.print(`    {`)
-        io.indent();
+        io.indent()
 
-        this.genConstructor(io);
-        this.genGetDefaultInstance(io);
-        this.genReadFrom(io);
-        this.genPARSER(io);
-        BitNameHelper.genMessageBitFieldPropertyDefinition(this, io);
-        this.genFieldPropertyGetSetHas(io);
-        this.genInitFields(io);
-        this.genIsInitialized(io);
-        this.genWriteTo(io);
-        this.genGetSerializedSize(io);
-        this.genParseFrom(io);
-        this.genBuilderMethod(io);
+        this.genConstructor(io)
+        this.genGetDefaultInstance(io)
+        this.genReadFrom(io)
+        this.genPARSER(io)
+        BitNameHelper.genMessageBitFieldPropertyDefinition(this, io)
+        this.genFieldPropertyGetSetHas(io)
+        this.genInitFields(io)
+        this.genIsInitialized(io)
+        this.genWriteTo(io)
+        this.genGetSerializedSize(io)
+        this.genParseFrom(io)
+        this.genBuilderMethod(io)
+        this.genMergeFrom(io)
 
-        io.outdent();
-        io.print(`}`);
+        io.outdent()
+        io.print(`}`)
+    }
+
+    protected genMergeFrom(io: IO) {
+
     }
 
     protected genParseFrom(io: IO) {
@@ -58,13 +63,13 @@ export class MessageBlock extends ProtoBlock {
 
     protected genGetSerializedSize(io: IO) {
         io.print()
-        io.print(Template.getSerializedSize_start);
+        io.print(Template.getSerializedSize_start)
         io.indent()
         for (var field of this.fields) {
-            field.genGetSerializedSize(io);
+            field.genGetSerializedSize(io)
         }
         io.outdent()
-        io.print(Template.getSerializedSize_end);
+        io.print(Template.getSerializedSize_end)
     }
 
     protected genIsInitialized(io: IO) {
@@ -83,9 +88,9 @@ export class MessageBlock extends ProtoBlock {
         }
         for (var field of this.fields) {
             if (field.isMessageField()) {
-                let temp = Template.optional_isInitialized_message;
-                if (field.isRepeated()) temp = Template.repeated_isInitialized_message;
-                if (field.isRequired()) temp = Template.required_isInitialized_message;
+                let temp = Template.optional_isInitialized_message
+                if (field.isRepeated()) temp = Template.repeated_isInitialized_message
+                if (field.isRequired()) temp = Template.required_isInitialized_message
                 io.print(temp.replace(/\$uppername\$/g, field.upperName()))
             }
         }
@@ -99,7 +104,7 @@ export class MessageBlock extends ProtoBlock {
         io.print(`private void initFields() {`)
         io.indent()
         for (var field of this.fields) {
-            field.genInitDefaultValue(io);
+            field.genInitDefaultValue(io)
         }
         io.outdent()
         io.print(`}`)
@@ -107,13 +112,13 @@ export class MessageBlock extends ProtoBlock {
 
     protected genFieldPropertyGetSetHas(io: IO) {
         for (var field of this.fields) {
-            field.genPropertyGetSetHas(io);
+            field.genPropertyGetSetHas(io)
         }
     }
 
     protected genPARSER(io: IO) {
-        io.print();
-        io.print(Template.message_PARSER.replace(/\$classname\$/g, this.name));
+        io.print()
+        io.print(Template.message_PARSER.replace(/\$classname\$/g, this.name))
     }
 
     protected genWriteTo(io: IO) {
@@ -123,40 +128,40 @@ export class MessageBlock extends ProtoBlock {
         io.print(`  getSerializedSize();`)
         io.indent()
         for (var field of this.fields) {
-            field.genWriteTo(io);
+            field.genWriteTo(io)
         }
         io.outdent()
         io.print(`}`)
     }
 
     protected genReadFrom(io: IO) {
-        io.print();
+        io.print()
         io.print(
             `private ${this.name}(` + '\n' + 
             `    com.google.protobuf.CodedInputStream input,` + '\n' + 
             `    com.google.protobuf.ExtensionRegistryLite extensionRegistry)` + '\n' + 
             `    throws com.google.protobuf.InvalidProtocolBufferException {` + '\n' + 
             `  initFields();`)
-        io.indent();
+        io.indent()
         // gen local bitField_ for repeated rules
-        BitNameHelper.genLocalBitFieldDefinition(this, io);
+        BitNameHelper.genLocalBitFieldDefinition(this, io)
         // parse while part begin
-        io.print(Template.read_try_catch_start);
-        io.indent();
-        io.indent();
-        io.indent();
+        io.print(Template.read_try_catch_start)
+        io.indent()
+        io.indent()
+        io.indent()
         // for-loop fields(handle packed option)
         for (var field of this.fields) {
-            field.genReadFrom(io);
+            field.genReadFrom(io)
         }
-        io.outdent();
-        io.outdent();
-        io.outdent();
+        io.outdent()
+        io.outdent()
+        io.outdent()
         // parse while part end
-        io.print(Template.read_try_catch_end);
+        io.print(Template.read_try_catch_end)
         // finally part 
-        io.outdent();
-        io.print(`}`);
+        io.outdent()
+        io.print(`}`)
     }
 
     protected genConstructor(io: IO) {
@@ -165,7 +170,7 @@ export class MessageBlock extends ProtoBlock {
             `private ${this.name}() {` + '\n' +  
             `  super();` + '\n' +  
             `  initFields();` + '\n' +   
-            `}`);
+            `}`)
     }
 
     protected genGetDefaultInstance(io: IO) {
@@ -174,22 +179,22 @@ export class MessageBlock extends ProtoBlock {
             `public static ${this.name} getDefaultInstance() {` + '\n' +  
             `  return new ${this.name}();` + '\n' +   
             `}`
-        );
+        )
     }
 }
 
 export class EnumValue {
-    public name!: string;
-    public value!: number;
+    public name!: string
+    public value!: number
 }
 export class EnumBlock extends ProtoBlock {
-    public values!: EnumValue[];
+    public values!: EnumValue[]
     public generateCode(io: IO): any {
         io.print(`public enum ${this.name}`)
         io.print(`    implements com.google.protobuf.Internal.EnumLite {`)
         io.indent()
-        this.genEnumValues(io);
-        this.genConstInt(io);
+        this.genEnumValues(io)
+        this.genConstInt(io)
         io.print()
         io.print(`public final int getNumber() { return value; }`)
         this.genValueOf(io)

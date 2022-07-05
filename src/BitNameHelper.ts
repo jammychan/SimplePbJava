@@ -1,5 +1,5 @@
-import { IO } from "./IO";
-import { MessageBlock } from "./ProtoBlock";
+import { IO } from "./IO"
+import { MessageBlock } from "./ProtoBlock"
 
 export class BitNameHelper {
     public static bit_masks = [
@@ -38,58 +38,58 @@ export class BitNameHelper {
         "0x20000000",
         "0x40000000",
         "0x80000000",
-    ];
+    ]
 
     public static getBitFieldName(index: number): string {
-        let varName = "bitField";
-        varName += index;
-        varName += "_";
-        return varName;
+        let varName = "bitField"
+        varName += index
+        varName += "_"
+        return varName
     }
 
     public static getBitFieldNameForBit(bitIndex: number): string {
-        return this.getBitFieldName(Math.floor(bitIndex / 32));
+        return this.getBitFieldName(Math.floor(bitIndex / 32))
     }
 
     public static generateGetBitInternal(bitIndex: number, prefix: string = ''): string {
-        let varName = prefix + this.getBitFieldNameForBit(bitIndex-1);
-        let bitInVarIndex = (bitIndex-1) % 32;
+        let varName = prefix + this.getBitFieldNameForBit(bitIndex-1)
+        let bitInVarIndex = (bitIndex-1) % 32
       
-        let mask = this.bit_masks[bitInVarIndex];
-        return "((" + varName + " & " + mask + ") == " + mask + ")";
+        let mask = this.bit_masks[bitInVarIndex]
+        return "((" + varName + " & " + mask + ") == " + mask + ")"
     }
 
     public static generateSetBitInternal(bitIndex: number, prefix: string = ''): string {
-        let varName = prefix + this.getBitFieldNameForBit(bitIndex-1);
-        let bitInVarIndex = (bitIndex-1) % 32;
+        let varName = prefix + this.getBitFieldNameForBit(bitIndex-1)
+        let bitInVarIndex = (bitIndex-1) % 32
       
-        let mask = this.bit_masks[bitInVarIndex];
-        return varName + " |= " + mask;
+        let mask = this.bit_masks[bitInVarIndex]
+        return varName + " |= " + mask
     }
 
     public static genLocalBitFieldDefinition(msgBlock: MessageBlock, io: IO) {
-        let bitFieldMap: any = {};
+        let bitFieldMap: any = {}
         for (var field of msgBlock.fields) {
             if (field.isRepeated()) {
                 // console.log(`field rule ${field.rule}`)
-                let index = Math.floor(field.seq/32);
+                let index = Math.floor(field.seq/32)
                 if (bitFieldMap[`bitField${index}`] == null) {
-                    bitFieldMap[`bitField${index}`] = 1;
-                    io.print(`int mutable_${this.getBitFieldName(index)} = 0;`);
+                    bitFieldMap[`bitField${index}`] = 1
+                    io.print(`int mutable_${this.getBitFieldName(index)} = 0;`)
                 }
             }
         }
     }
 
     public static genMessageBitFieldPropertyDefinition(msgBlock: MessageBlock, io: IO) {
-        let max = 0;
+        let max = 0
         for (var field of msgBlock.fields) {
             if (field.seq > max) {
-                max = field.seq;
+                max = field.seq
             }
         }
         if (max > 0) {
-            let bitNumber = Math.ceil(max/32);
+            let bitNumber = Math.ceil(max/32)
             for (var i=0; i<bitNumber; ++i) {
                 io.print(`protected int bitField${i}_;`)
             }
