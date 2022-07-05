@@ -17,6 +17,10 @@ export abstract class ProtoBlock {
     //     this.nestedOnes = nestedOnes
     // }
     public abstract generateCode(io: IO): any
+
+    public blockJavaClassPath(): string {
+        return `${this.protoFile.java_package}.${this.protoFile.java_outer_classname}.${this.name}`
+    }
 }
 
 export class MessageBlock extends ProtoBlock {
@@ -46,19 +50,27 @@ export class MessageBlock extends ProtoBlock {
     }
 
     protected genMergeFrom(io: IO) {
-
+        io.print()
+        io.print(`public void mergeFrom(${this.blockJavaClassPath()} other) {`)
+        io.indent()
+        io.print(`if (other == ${this.blockJavaClassPath()}.getDefaultInstance()) return;`)
+        for (var field of this.fields) {
+            field.genMergeFrom(io)    
+        }
+        io.outdent()
+        io.print(`}`)
     }
 
     protected genParseFrom(io: IO) {
         io.print(Template.parse_from
-            .replace(/\$messagename\$/g, this.name)
-            .replace(/\$classname\$/g, this.protoFile.java_package+'.'+this.protoFile.java_outer_classname))
+            .replace(/\$messageclasspath\$/g, this.blockJavaClassPath())
+            )
     }
 
     protected genBuilderMethod(io: IO) {
         io.print(Template.builder_method
-            .replace(/\$messagename\$/g, this.name)
-            .replace(/\$classname\$/g, this.protoFile.java_package+'.'+this.protoFile.java_outer_classname))
+            .replace(/\$messageclasspath\$/g, this.blockJavaClassPath())
+            )
     }
 
     protected genGetSerializedSize(io: IO) {

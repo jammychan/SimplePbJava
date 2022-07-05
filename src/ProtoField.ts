@@ -51,6 +51,10 @@ export class Field {
     public rule!: string        // required/optional/repeated...
     public options!: any        // packed/default
 
+    public genMergeFrom(io: IO) {
+        io.print(Template.merge_from.replace(/\$uppername\$/g, this.upperName()))
+    }
+
     public genGetSerializedSize(io: IO) {
         let iotype = this.ioType()
         let getNumberCall = this.isEnumField() ? ".getNumber()" : ""
@@ -275,6 +279,17 @@ export class MessageField extends Field {
     public ioType() {
         return "Message"
     }
+
+    public genMergeFrom(io: IO): void {
+        io.print(`if (other.has${this.upperName()}()) {`)
+        io.print(`  if (${BitNameHelper.generateGetBitInternal(this.seq)} && ${this.propertyName()} != ${this.getTypeClass()}.getDefaultInstance()) {`)
+        io.print(`    ${this.propertyName()}.mergeFrom(other.${this.propertyName()});`)
+        io.print(`  } else {`)
+        io.print(`    ${this.propertyName()} = other.${this.propertyName()}`)
+        io.print(`  }`)
+        io.print(`  ${BitNameHelper.generateSetBitInternal(this.seq)};`)
+        io.print(`}`)
+    }
 }
 
 export class EnumField extends Field {
@@ -464,6 +479,14 @@ export class RepeatedField extends Field {
 
     protected genDefaultValue() {
         return `java.util.Collections.emptyList()`
+    }
+
+    public genMergeFrom(io: IO): void {
+        io.print(Template.merge_from_repeated
+            .replace(/\$propertyname\$/g, this.propertyName())
+            .replace(/\$uppername\$/g, this.upperName())
+            .replace(/\$setbitfield\$/g, BitNameHelper.generateSetBitInternal(this.seq))
+        )
     }
 }
 

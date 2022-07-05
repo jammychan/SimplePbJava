@@ -182,24 +182,24 @@ public static repeated_string_serialized_size: string =
 }`
 
 public static parse_from: string = 
-`public static $classname$.$messagename$ parseFrom(
+`public static $messageclasspath$ parseFrom(
     com.google.protobuf.ByteString data)
     throws com.google.protobuf.InvalidProtocolBufferException {
   return PARSER.parseFrom(data);
 }
-public static $classname$.$messagename$ parseFrom(byte[] data)
+public static $messageclasspath$ parseFrom(byte[] data)
     throws com.google.protobuf.InvalidProtocolBufferException {
   return PARSER.parseFrom(data);
 }`
 
 public static builder_method: string = 
-`public static $classname$.$messagename$ newBuilder() { return new $classname$.$messagename$(); }
-public static $classname$.$messagename$ newBuilder($classname$.$messagename$ prototype) {
+`public static $messageclasspath$ newBuilder() { return new $messageclasspath$(); }
+public static $messageclasspath$ newBuilder($messageclasspath$ prototype) {
   return prototype;
 }
-public $classname$.$messagename$ toBuilder() { return this; }
-public $classname$.$messagename$ build() {
-  $classname$.$messagename$ result = this;
+public $messageclasspath$ toBuilder() { return this; }
+public $messageclasspath$ build() {
+  $messageclasspath$ result = this;
   if (!result.isInitialized()) {
     throw new com.google.protobuf.UninitializedMessageException(result);
   }
@@ -245,4 +245,20 @@ public static enum_read_value: string =
 `int rawValue = input.readEnum();
 $enumname$ value = $enumname$.valueOf(rawValue);
 if (value != null) {`
+
+public static merge_from: string = 
+`if (other.has$uppername$()) {
+  set$uppername$(other.get$uppername$());
+}`
+
+public static merge_from_repeated: string = 
+`if (!other.$propertyname$.isEmpty()) {
+  if ($propertyname$.isEmpty()) {
+    $propertyname$ = other.$propertyname$;
+    $setbitfield$;
+  } else {
+    ensure$uppername$IsMutable();
+    $propertyname$.addAll(other.$propertyname$);
+  }
+}`
 }
