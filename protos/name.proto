@@ -1,0 +1,11 @@
+package example;
+
+option optimize_for = LITE_RUNTIME;
+option java_package = "com.simplepbjava";
+option java_outer_classname = "NameClass";
+
+message Name {
+    optional string given_name = 1;
+    optional string family_name = 2;
+    optional string middle_name = 3;
+}

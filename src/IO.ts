@@ -7,7 +7,7 @@ export class IO {
 
     constructor(path: string) {
         this.filepath = path
-        fs.rmSync(path)
+        if (fs.existsSync(path)) fs.rmSync(path)
     }
 
     public indent() {
