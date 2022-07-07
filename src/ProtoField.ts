@@ -1,6 +1,6 @@
 import { BitNameHelper } from "./BitNameHelper"
 import { IO } from "./IO"
-import { ProtoBlock } from "./ProtoBlock"
+import { EnumBlock, ProtoBlock } from "./ProtoBlock"
 import { Template } from "./Template"
 import { WireTagHelper } from "./WireTagHelper"
 
@@ -181,9 +181,11 @@ export class Field {
     }
 
     public getTypeClass(): string {
-        return this.isMessageField() || this.isEnumField() 
-            ? `${this.block.protoFile.java_package}.${this.block.protoFile.java_outer_classname}.${this.type}` 
-            : ""
+        if (this.isMessageField() || this.isEnumField()) {
+            let protoBlock: ProtoBlock =  this.block.protoFile.keyToProtoBlock[this.type]
+            return `${protoBlock.protoFile.java_package}.${protoBlock.protoFile.java_outer_classname}.${this.type}` 
+        }
+        return ""
     }
 
     public genWriteTo(io: IO) {
@@ -262,18 +264,22 @@ export class MessageField extends Field {
     }
 
     public genReadFrom(io: IO) {
+        let isSupportSetMsgFieldMultiTimes = true
         let tag = WireTagHelper.getTag(this)
         io.print(`case ${tag}: {`)
         io.indent()
-        
-        io.print(``)
-        io.print(`${this.getTypeClass()} ${this.propertyName()}Tmp = input.readMessage(${this.getTypeClass()}.PARSER, extensionRegistry);`)
-        io.print(`if (${BitNameHelper.generateGetBitInternal(this.seq)}) {`)
-        io.print(`  ${this.propertyName()}.mergeFrom(${this.propertyName()}Tmp);`)
-        io.print('} else {')
-        io.print(`  ${this.propertyName()} = ${this.propertyName()}Tmp;`)
-        io.print(`  ${BitNameHelper.generateSetBitInternal(this.seq)};`)
-        io.print(`}`)
+        if (isSupportSetMsgFieldMultiTimes) {
+            io.print(`${this.getTypeClass()} ${this.propertyName()}Tmp = input.readMessage(${this.getTypeClass()}.PARSER, extensionRegistry);`)
+            io.print(`if (${BitNameHelper.generateGetBitInternal(this.seq)}) {`)
+            io.print(`  ${this.propertyName()}.mergeFrom(${this.propertyName()}Tmp);`)
+            io.print('} else {')
+            io.print(`  ${this.propertyName()} = ${this.propertyName()}Tmp;`)
+            io.print(`  ${BitNameHelper.generateSetBitInternal(this.seq)};`)
+            io.print(`}`)
+        } else {
+            io.print(`${this.propertyName()} = input.readMessage(${this.getTypeClass()}.PARSER, extensionRegistry);`)
+            io.print(BitNameHelper.generateSetBitInternal(this.seq) + ';')
+        }
         io.print(`break;`)
         io.outdent()
         io.print(`}`)
@@ -315,15 +321,14 @@ export class EnumField extends Field {
     }
 
     protected genDefaultValue() {
-        let enumBlock = this.block.protoFile.blocksObject[this.type]
+        let enumBlock: EnumBlock = this.block.protoFile.keyToProtoBlock[this.type]
         if (null == enumBlock || null == enumBlock.values) {
             throw new Error(`unknow enum type[${this.type}].`)
         }
-        let keys = Object.keys(enumBlock.values)
-        if (keys.length <= 0) {
+        if (enumBlock.values.length <= 0) {
             throw new Error(`enum type[${this.type}], not has enum values.`)
         }
-        let firstOneEnumValue = keys[0]
+        let firstOneEnumValue = enumBlock.values[0].name
         return `${this.getTypeClass()}.${firstOneEnumValue}`
     }
 

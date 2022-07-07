@@ -18,6 +18,14 @@ export abstract class ProtoBlock {
     // }
     public abstract generateCode(io: IO): any
 
+    public isMessage(): boolean {
+        return false
+    }
+
+    public isEnum(): boolean {
+        return false
+    }
+
     public blockJavaClassPath(): string {
         return `${this.protoFile.java_package}.${this.protoFile.java_outer_classname}.${this.name}`
     }
@@ -25,6 +33,11 @@ export abstract class ProtoBlock {
 
 export class MessageBlock extends ProtoBlock {
     public fields!: Field[]
+
+    public isMessage(): boolean {
+        return true
+    }
+
     public generateCode(io: IO): any {
         io.print(`public static class ${this.name} extends`)
         io.print(`    com.mini_pbjava.GeneratedMessageLiteBase`)
@@ -201,6 +214,10 @@ export class EnumValue {
 }
 export class EnumBlock extends ProtoBlock {
     public values!: EnumValue[]
+
+    public isEnum(): boolean {
+        return true
+    }
     public generateCode(io: IO): any {
         io.print(`public enum ${this.name}`)
         io.print(`    implements com.google.protobuf.Internal.EnumLite {`)

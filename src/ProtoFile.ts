@@ -7,21 +7,19 @@ export class ProtoFile {
     public java_package!: string
     public java_outer_classname!: string
     public blocks!: ProtoBlock[]
-    public blocksObject!: any
+    public keyToProtoBlock!: {[s: string]: ProtoBlock}
 
     public generateCode(outputDir: string) {
         let subDirs = this.java_package.split('\.')
-        let outputJavaDir = outputDir
+        let javaOutDir = outputDir
         for (var dir of subDirs) {
-            outputJavaDir = path.join(outputJavaDir, dir)
+            javaOutDir = path.join(javaOutDir, dir)
         }
-        if (!fs.existsSync(outputJavaDir)) {
-            fs.mkdirSync(outputJavaDir)
-        }
-        let outputJavaPath = path.join(outputJavaDir, this.java_outer_classname + '.java')
-        // console.log(`outputJavaDir = ${outputJavaDir}, outputJavaPath = ${outputJavaPath}`)
+        IO.mkdir(javaOutDir)
+        let javaOutPath = path.join(javaOutDir, this.java_outer_classname + '.java')
+        // console.log(`javaOutDir = ${javaOutDir}, javaOutPath = ${javaOutPath}`)
         
-        let io = new IO(outputJavaPath)
+        let io = new IO(javaOutPath)
         io.print(`package ${this.java_package};`)
         io.print()
         io.print(`public final class ${this.java_outer_classname} {`)

@@ -7,6 +7,7 @@ export class IO {
 
     constructor(path: string) {
         this.filepath = path
+        fs.rmSync(path)
     }
 
     public indent() {
@@ -25,6 +26,12 @@ export class IO {
             line = this.indent_ + line + '\n'
             // fs write line
             fs.appendFileSync(this.filepath, line, {'flag': 'a+'})
+        }
+    }
+
+    public static mkdir(dir: string) {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true })
         }
     }
 }
