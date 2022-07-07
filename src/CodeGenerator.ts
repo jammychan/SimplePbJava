@@ -16,6 +16,7 @@ export class CodeGenerator {
         
         // generate java source codee
         protoFile.generateCode(javaOutDir)
+        console.log(`generate code finished.`)
     }
 
     protected parseCurProto(protoPath: string, protosDir: string, pathToProtoResult: any, depth: number = 0) {
