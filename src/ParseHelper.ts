@@ -23,7 +23,7 @@ export class ParseHelper {
                     protoBlock.values = this.enumValuesObjectToArr(blocksObject[key].values)
                 }
                 
-                if (keyToProtoBlock[key] != null) throw new Error(`${key} define multi times.`)
+                //if (keyToProtoBlock[key] != null) throw new Error(`${key} define multi times.`)
                 keyToProtoBlock[key] = protoBlock
             }
         }
