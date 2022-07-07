@@ -1,6 +1,6 @@
 import * as protobuf from 'protobufjs'
 import { CodeGenerator } from './CodeGenerator'
-import { Helper } from './Helper'
+import { ParseHelper } from './ParseHelper'
 import { IO } from './IO'
 
 (async function main() {
@@ -21,7 +21,7 @@ import { IO } from './IO'
     let pathToProtoResult: any = {}
     parseCurProto(argv.params, protosDir, pathToProtoResult)
     // console.log(JSON.stringify(pathToProtoResult))
-    let protoFile = new Helper().toProtoFile(pathToProtoResult[argv.params], pathToProtoResult)
+    let protoFile = new ParseHelper().toProtoFile(pathToProtoResult[argv.params], pathToProtoResult)
 
     // 传入code generator生成java
     new CodeGenerator().generate(protoFile, javaOutDir)

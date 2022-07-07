@@ -2,7 +2,7 @@ import { ProtoFile } from "./ProtoFile"
 import { BLOCK_TYPE, EnumBlock, EnumValue, MessageBlock, ProtoBlock} from "./ProtoBlock"
 import { EnumField, EnumRepeatedField, Field, FIELD_RULE, MessageField, MessageRepeatedField, ProtoField, RepeatedField, StringField, StringRepeatedField } from "./ProtoField"
 
-export class Helper {
+export class ParseHelper {
 
     protected resolveAllBlocks(pathToProtoResult: any): any {
         let keyToProtoBlock: any = {}
@@ -23,6 +23,7 @@ export class Helper {
                     protoBlock.values = this.enumValuesObjectToArr(blocksObject[key].values)
                 }
                 
+                if (keyToProtoBlock[key] != null) throw new Error(`${key} define multi times.`)
                 keyToProtoBlock[key] = protoBlock
             }
         }

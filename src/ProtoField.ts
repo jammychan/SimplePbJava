@@ -321,7 +321,7 @@ export class EnumField extends Field {
     }
 
     protected genDefaultValue() {
-        let enumBlock: EnumBlock = this.block.protoFile.keyToProtoBlock[this.type]
+        let enumBlock: EnumBlock = this.block.protoFile.keyToProtoBlock[this.type] as EnumBlock
         if (null == enumBlock || null == enumBlock.values) {
             throw new Error(`unknow enum type[${this.type}].`)
         }
