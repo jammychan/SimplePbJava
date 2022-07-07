@@ -7,7 +7,7 @@
     "build": "./node_modules/.bin/tsc",
     "gen": "node ./build/cli.js build ./protos/namecard.proto",
     "cli": "node ./build/cli.js",
-    "test":"node ./build/Test.js",
+    "test": "uvu -r tsm tests",
     "esbuild": "esbuild `find src \\( -name '*.ts' \\)` --bundle --platform=node --outdir=./build"
   },
   "keywords": [
@@ -19,7 +19,9 @@
   "devDependencies": {
     "@types/node": "^18.0.0",
     "tslint": "^6.1.3",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "tsm": "^2.0.0",
+    "uvu": "^0.5.1"
   },
   "dependencies": {
     "esbuild": "^0.14.48",
