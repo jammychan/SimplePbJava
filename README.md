@@ -1,18 +1,19 @@
-# SimplePbJava
+## SimplePbJava
 generate protocal java source without lost of Builder class.
 
 
 
-build and run：
+#### build and run：
 
 `npm install`
 
 `npm run esbuild`
+
 `node ./build/cli.js --java_out ./java_out --proto_dir ./protos ./protos/name.proto`
 
 
 
-todo:
+#### todo:
 
 - lite_runtime
 - oneof
