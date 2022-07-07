@@ -29,7 +29,11 @@ import { IO } from './IO'
     console.error(err)
 })
 
-function parseCurProto(protoPath: string, protosDir: string, pathToProtoResult: any) {
+function parseCurProto(protoPath: string, protosDir: string, pathToProtoResult: any, depth: number = 0) {
+    if (depth > 1) {
+        // A import B, B import C, C import D, just parse A/B, abandon C/D
+        return
+    }
     if (pathToProtoResult[protoPath] != null) {
         return
     }
@@ -55,7 +59,7 @@ function parseCurProto(protoPath: string, protosDir: string, pathToProtoResult: 
     let parseResult = root.loadSync(protoPath)
     pathToProtoResult[protoPath] = parseResult
     for (var path of importedPaths) {
-        parseCurProto(path, protosDir, pathToProtoResult)
+        parseCurProto(path, protosDir, pathToProtoResult, depth+1)
     }
 }
 
